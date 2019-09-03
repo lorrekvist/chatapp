@@ -29,6 +29,7 @@ export default function Nav() {
                     <Tab label="Home" component={Link} to="/" />
                     <Tab label="Login" component={Link} to="/Login"/>
                     <Tab label="About" component={Link} to="/About"/>
+                    <Tab label="Chat" component={Link} to="/Chat"/>
                 </Tabs>
         </Paper>
         )

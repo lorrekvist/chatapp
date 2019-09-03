@@ -4,6 +4,10 @@ import  Login  from './Login'
 import  Nav  from './Nav'
 import  Home from './Home';
 import About from './About'
+import Signup from './Signup'
+import Chat from './Chat';
+
+
 class App extends React.Component {
     state = {
       categorySelected: 0
@@ -24,8 +28,10 @@ class App extends React.Component {
             <div>
               <Nav selectedCat={this.state.categorySelected} onSelect={this.onCategoryChange}/>
               <Route exact path="/" component={Home} />
-              <Route path="/about" component={About} />
-              <Route path="/login" component={Login} />
+              <Route exact path="/about" component={About} />
+              <Route exact path="/login" component={Login} />
+              <Route exact path="/signup" component={Signup} />
+              <Route exact path="/chat" component={Chat} />
             </div>
           </Router>  
         </div>  

@@ -5,8 +5,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
-import { Link as RouterLink } from 'react-router-dom';
-import Link from '@material-ui/core/Link'
 import { setToken } from './AuthHelper';
 
 
@@ -16,7 +14,7 @@ const styles = theme => ({
         flexWrap: 'wrap',
     },
     textField: {
-        //marginLeft: theme.spacing(1),
+       // marginLeft: theme.spacing(1),
         //marginRight: theme.spacing(1),
     },
     dense: {
@@ -28,19 +26,23 @@ const styles = theme => ({
     
 });
  
-class Login extends React.Component {
+class Signup extends React.Component {
     
     
 
     
     state = {
         email: "",
-        password: ""
+        password: "",
+        displayName: ""
     }
     
     handleUsernameChange = (e) => {
         this.setState({email: e.target.value})
 
+    }
+    handleDisplayNameChange = (e) => {
+        this.setState({displayName: e.target.value})
     }
     handlePasswordChange = (e) => {
         this.setState({password: e.target.value})
@@ -51,13 +53,14 @@ class Login extends React.Component {
     }
     handleSubmit = (e) => {
         e.preventDefault()
-
+        console.log(this.state.email);
         axios({
             method: 'post',
-            url: 'http://localhost:3001/login',
+            url: 'http://localhost:3001/signup',
             data: {
                 email: this.state.email,
-                password: this.state.password
+                password: this.state.password,
+                displayName: this.state.displayName
             }
         }).then((result) => {
             if(result && result.data && result.data.signedJWT){
@@ -86,6 +89,15 @@ class Login extends React.Component {
                 onChange = {this.handleUsernameChange}
                 margin="normal"
                 variant="outlined"/>
+                
+            <TextField
+                id="displayName"
+                label="displayName"
+                className={classes.textField}
+                value={this.state.displayName}
+                onChange = {this.handleDisplayNameChange}
+                margin="normal"
+                variant="outlined"/>
             
             <TextField
                 id="password"
@@ -95,22 +107,19 @@ class Login extends React.Component {
                 onChange = {this.handlePasswordChange}
                 margin="normal"
                 variant="outlined"/>
+
             <Button variant="outlined" type="submit"className={classes.button}>
-                Log in
+                Sign up
             </Button>
     
         </form>
-
-            <Link component={RouterLink} to="/signup">
-            Click here to sign up.
-            </Link>
         </div>
         );
    }
 }
-Login.propTypes = {
+Signup.propTypes = {
     classes: PropTypes.object.isRequired,
 };
 
 
-export default withStyles(styles)(Login);
+export default withStyles(styles)(Signup);
