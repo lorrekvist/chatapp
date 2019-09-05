@@ -6,8 +6,14 @@ import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import Paper from '@material-ui/core/Paper';
+import { deepOrange } from '@material-ui/core/colors';
 import Typography from '@material-ui/core/Typography';
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import Divider from '@material-ui/core/Divider';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Avatar from '@material-ui/core/Avatar';
 
 const useStyles = theme => ({
     message: {
@@ -23,7 +29,21 @@ const useStyles = theme => ({
     },
     dense: {
 
-    }
+    },
+    orangeAvatar: {
+        color: '#fff',
+        backgroundColor: deepOrange[500],
+    },
+    messagesList: {
+        width: '100%',
+        maxHeight: 500,
+        overflow: "auto",
+        overflowAnchor: "none"
+    },
+    anchor: {
+        overflowAnchor: "auto",
+        height: 1
+      }
 
 });
 
@@ -65,7 +85,8 @@ class Chat extends React.Component{
             this.getMessagesFromDb();
             socket = openSocket('http://localhost:3002');
                 socket.on('chat message', (msg) => {
-                    this.setState({messages: [...this.state.messages.reverse(), msg].reverse()})
+                    console.log("got msg: " + msg);
+                    this.setState({messages: [...this.state.messages, msg]})
   });
         }
     }
@@ -87,21 +108,36 @@ class Chat extends React.Component{
         const { classes } = this.props;
         return (
             <div>
-                <p>
-                    {this.state.messages.map(value => 
-                        <Paper className={classes.message}>
-                            <Typography variant="h5" component="h3">
-                                {value.displayName}
-                            </Typography>
-                            <Typography component="p">
-                                {value.message}
-                            </Typography>
-                            <Typography component="small">
-                                {value.createdAt}
-                            </Typography>
-                        </Paper>
+                <List className={classes.messagesList}>
+                    {this.state.messages.map((value, index) => 
+                    <React.Fragment key={index} >
+                         <ListItem alignItems="flex-start">
+                           <ListItemAvatar>
+                           <Avatar className={classes.orangeAvatar}>{value.displayName.charAt(0)}</Avatar>
+                           </ListItemAvatar>
+                           <ListItemText
+                             primary={value.displayName}
+                             secondary={
+                               <React.Fragment>
+                                 <Typography
+                                   component="span"
+                                   variant="body2"
+                                   className={classes.inline}
+                                   color="textPrimary"
+                                 >
+                                   {value.message}
+                                 </Typography>
+                                 <br />
+                                 {value.createdAt}
+                               </React.Fragment>
+                             }
+                           />
+                         </ListItem>
+                         <Divider variant="inset" component="li" />
+                         </React.Fragment>
                     )}
-                </p>
+                    <p className="anchor" />
+                </List>
                 <form onSubmit = {this.handleSubmit} className={classes.inputForm}>
                 <TextField
                     id="message"
@@ -125,10 +161,5 @@ class Chat extends React.Component{
     }
     
 }
-
-/*Chat.propTypes = {
-    classes: PropTypes.object.isRequired,
-};*/
-
 
 export default withStyles(useStyles)(Chat);

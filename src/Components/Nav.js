@@ -1,5 +1,4 @@
 import React from 'react';
-import Paper from '@material-ui/core/Paper';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Link } from "react-router-dom";
@@ -18,7 +17,6 @@ export default function Nav() {
    
 
         return (
-            <Paper className={classes.root}>
                 <Tabs
                     value={value}
                     onChange={handleChange}
@@ -31,7 +29,6 @@ export default function Nav() {
                     <Tab label="About" component={Link} to="/About"/>
                     <Tab label="Chat" component={Link} to="/Chat"/>
                 </Tabs>
-        </Paper>
         )
 }
 
