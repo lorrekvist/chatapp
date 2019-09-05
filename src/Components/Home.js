@@ -2,14 +2,22 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
+import { shadows } from '@material-ui/system';
+import 'typeface-roboto';
+
 const useStyles = makeStyles(theme => ({
     root: {
+      shadows: "2",
       padding: theme.spacing(3, 2),
-      width: "300px",
+      width: "450px",
       marginLeft: "auto",
       marginRight: "auto",
-      marginTop: "30px"
+      marginTop: "30px",
+      backgroundColor: "#1976d2",
+      color: "#ffffff",
     },
+    
+    
   }));
   
 export default function PaperSheet() {
@@ -17,7 +25,7 @@ export default function PaperSheet() {
   
     return (
       <div>
-        <Paper className={classes.root}>
+        <Paper className={classes.root} >
           <Typography variant="h5" component="h3">
             Home of chatBois
             </Typography>

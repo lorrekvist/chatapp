@@ -14,37 +14,70 @@ import Divider from '@material-ui/core/Divider';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import Avatar from '@material-ui/core/Avatar';
+import Box from '@material-ui/core/Box';
+import Badge from '@material-ui/core/Badge';
+import keydown from 'react-keydown';
+import { shadows } from '@material-ui/system';
+import 'typeface-roboto';
+
 
 const useStyles = theme => ({
+    '@global': {
+        '*::-webkit-scrollbar': {
+          width: '0.8em'
+        },
+        '*::-webkit-scrollbar-track': {
+          '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
+        },
+        '*::-webkit-scrollbar-thumb': {
+          backgroundColor: 'rgba(0,0,0,.1)',
+          outline: '1px solid slategrey',
+          borderRadius: 5
+        }
+      },
+    root: {
+        margin: 10,
+        backgroundColor: "#ffffff",
+        padding: 10,
+        borderRadius: 5
+    },
     message: {
         marginTop: 5,
-        padding: 5
+        padding: 10
     },
     container: {
         display: 'flex',
         flexWrap: 'wrap',
     },
     textField: {
-
+        boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px",
+        borderRadius: 5
     },
     dense: {
-
+        
     },
     orangeAvatar: {
         color: '#fff',
         backgroundColor: deepOrange[500],
+        margin: 5
     },
     messagesList: {
         width: '100%',
         maxHeight: 500,
         overflow: "auto",
-        overflowAnchor: "none"
+        boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px",
+        borderRadius: 5
     },
-    anchor: {
-        overflowAnchor: "auto",
-        height: 1
-      }
-
+    
+    button: {
+        backgroundColor: theme.primary,
+        color: "#ffffff",
+        "&:hover": {
+            backgroundColor: theme.primary
+            
+        },
+        boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
+    },
 });
 
 var socket;
@@ -59,6 +92,12 @@ class Chat extends React.Component{
 
     handleMessageChange = (e) => {
         this.setState({message: e.target.value})
+    }
+    handleKeyDown = (e) => {
+        console.log("key was pressed")
+        if(e.key==='Enter'){
+            this.handleSubmit(e)
+        }
     }
     handleSubmit = (e) => {
         e.preventDefault()
@@ -86,7 +125,7 @@ class Chat extends React.Component{
             socket = openSocket('http://localhost:3002');
                 socket.on('chat message', (msg) => {
                     console.log("got msg: " + msg);
-                    this.setState({messages: [...this.state.messages, msg]})
+                    this.setState({messages: [...this.state.messages.reverse(), msg].reverse()})
   });
         }
     }
@@ -107,14 +146,13 @@ class Chat extends React.Component{
     render() {
         const { classes } = this.props;
         return (
-            <div>
+            <div className={classes.root}>
                 <List className={classes.messagesList}>
+
                     {this.state.messages.map((value, index) => 
                     <React.Fragment key={index} >
                          <ListItem alignItems="flex-start">
-                           <ListItemAvatar>
-                           <Avatar className={classes.orangeAvatar}>{value.displayName.charAt(0)}</Avatar>
-                           </ListItemAvatar>
+                            <Avatar className={classes.orangeAvatar}>{value.displayName.charAt(0)}</Avatar>
                            <ListItemText
                              primary={value.displayName}
                              secondary={
@@ -128,15 +166,15 @@ class Chat extends React.Component{
                                    {value.message}
                                  </Typography>
                                  <br />
-                                 {value.createdAt}
+                                 {new Date(value.createdAt).toLocaleDateString() + " " + new Date(value.createdAt).toLocaleTimeString()}
                                </React.Fragment>
                              }
                            />
                          </ListItem>
                          <Divider variant="inset" component="li" />
                          </React.Fragment>
+
                     )}
-                    <p className="anchor" />
                 </List>
                 <form onSubmit = {this.handleSubmit} className={classes.inputForm}>
                 <TextField
@@ -144,15 +182,19 @@ class Chat extends React.Component{
                     label="message"
                     onChange={this.handleMessageChange}
                     value={this.state.message}
+                    onKeyDown={this.handleKeyDown}
                     className={clsx(classes.textField, classes.dense)}
                     margin="dense"
-                    variant="filled"
+                    variant="outlined"
                     multiline
                     rowsMax="4"
                     fullWidth
                 />
                 <br />
-                <Button variant="outlined" type="submit" className={classes.button}>
+                <Button variant="contained"
+                 type="submit" 
+                 className={classes.button}
+                 >
                     Post message
                 </Button>
                 </form>                

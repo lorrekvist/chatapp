@@ -6,7 +6,23 @@ import  Home from './Home';
 import About from './About'
 import Signup from './Signup'
 import Chat from './Chat';
+import 'typeface-roboto';
+import { withStyles } from '@material-ui/styles';
+import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
 
+import { ThemeProvider } from '@material-ui/styles';
+
+const theme = createMuiTheme({
+    primary: "#1976d2",
+});
+
+const useStyles = theme => ({
+  root: {
+      background: "url('https://www.toptal.com/designers/subtlepatterns/patterns/brushed.png')",
+      height: "100vh",
+  },
+
+}); 
 
 class App extends React.Component {
     state = {
@@ -22,8 +38,11 @@ class App extends React.Component {
 }
 
     render(){
+      const { classes } = this.props;
+
       return (
-        <div>
+        <ThemeProvider theme={theme}>
+        <div className={classes.root}>
           <Router>
             <div>
               <Nav selectedCat={this.state.categorySelected} onSelect={this.onCategoryChange}/>
@@ -35,10 +54,11 @@ class App extends React.Component {
             </div>
           </Router>  
         </div>  
+        </ThemeProvider>
       );
       
   }
 }
 
 
-export default App;
+export default withStyles(useStyles)(App);
