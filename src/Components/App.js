@@ -8,7 +8,7 @@ import Signup from './Signup'
 import Chat from './Chat';
 import 'typeface-roboto';
 import { withStyles } from '@material-ui/styles';
-import { createMuiTheme, makeStyles } from '@material-ui/core/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
 
 import { ThemeProvider } from '@material-ui/styles';
 

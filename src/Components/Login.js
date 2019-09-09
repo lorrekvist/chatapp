@@ -1,16 +1,13 @@
 import React from 'react';
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types';
 import Button from '@material-ui/core/Button';
 import { Link as RouterLink } from 'react-router-dom';
-import Link from '@material-ui/core/Link';
+import Typography from '@material-ui/core/Typography';
 import { setToken } from './AuthHelper';
-import { shadows } from '@material-ui/system';
 import 'typeface-roboto';
-import Box from '@material-ui/core/Box';
 
 
 const styles = theme => ({
@@ -37,7 +34,7 @@ const styles = theme => ({
         width: "95px",
         marginLeft: "auto",
         marginRight: "5px",
-        backgroundColor: "#1976d2",
+        backgroundColor: theme.primary,
         color: "#ffffff",
         "&:hover": {
             //you want this to be the same as the backgroundColor above
@@ -49,7 +46,7 @@ const styles = theme => ({
         width: "95px",
         marginRight: "auto",
         marginLeft: "5px",
-        backgroundColor: "#1976d2",
+        backgroundColor: theme.primary,
         color: "#ffffff",
         "&:hover": {
             //you want this to be the same as the backgroundColor above
@@ -116,6 +113,10 @@ class Login extends React.Component {
         marginRight: "auto",
         marginTop: "30px"}}>
       
+        <Typography variant="h1" component="h2" gutterBottom>
+            Log in
+        </Typography>
+
         <form className = {classes.container}onSubmit = {this.handleSubmit}>
             
             <TextField
@@ -126,6 +127,7 @@ class Login extends React.Component {
                 onChange = {this.handleUsernameChange}
                 margin="normal"
                 variant="outlined"
+                fullWidth
                 />
                          
             <TextField
@@ -137,11 +139,13 @@ class Login extends React.Component {
                 onChange = {this.handlePasswordChange}
                 onKeyDown={this.handleKeyDownPass}
                 margin="normal"
-                variant="outlined"/>
-            <Button variant="outlined" type="submit"className={classes.button}>
+                variant="outlined"
+                fullWidth
+                />
+            <Button variant="outlined" type="submit"className={classes.button} disableRipple>
                 Log in
             </Button>
-            <Button variant="outlined" className={classes.button2} component={RouterLink} to="/signup">
+            <Button variant="outlined" className={classes.button2} component={RouterLink} to="/signup" disableRipple>
                 sign up
             </Button>
     

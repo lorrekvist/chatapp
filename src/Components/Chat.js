@@ -1,25 +1,21 @@
 import React from 'react';
 import axios from 'axios'
 import openSocket from 'socket.io-client';
-import { isLoggedIn, getToken } from './AuthHelper';
 import clsx from 'clsx';
 import { withStyles } from '@material-ui/styles';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import { deepOrange } from '@material-ui/core/colors';
-import Typography from '@material-ui/core/Typography';
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
 import Divider from '@material-ui/core/Divider';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
-import Box from '@material-ui/core/Box';
-import Badge from '@material-ui/core/Badge';
-import keydown from 'react-keydown';
-import { shadows } from '@material-ui/system';
 import 'typeface-roboto';
-
+import Tabs from '@material-ui/core/Tabs';
+import Tab from '@material-ui/core/Tab';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { isLoggedIn, getToken } from './AuthHelper';
+import ChatMessage from './ChatMessage';
 
 const useStyles = theme => ({
     '@global': {
@@ -30,7 +26,7 @@ const useStyles = theme => ({
           '-webkit-box-shadow': 'inset 0 0 6px rgba(0,0,0,0.00)'
         },
         '*::-webkit-scrollbar-thumb': {
-          backgroundColor: 'rgba(0,0,0,.1)',
+          backgroundColor: 'rgba(0,0,0,.25)',
           outline: '1px solid slategrey',
           borderRadius: 5
         }
@@ -56,11 +52,6 @@ const useStyles = theme => ({
     dense: {
         
     },
-    orangeAvatar: {
-        color: '#fff',
-        backgroundColor: deepOrange[500],
-        margin: 5
-    },
     messagesList: {
         width: '100%',
         maxHeight: 500,
@@ -74,7 +65,6 @@ const useStyles = theme => ({
         color: "#ffffff",
         "&:hover": {
             backgroundColor: theme.primary
-            
         },
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
     },
@@ -87,7 +77,10 @@ class Chat extends React.Component{
     state = {
         displayName: "",
         message: "",
-        messages: []
+        messages: [],
+        chats : [],
+        chatTab: 1,
+        createNewChat: false
     }
 
     handleMessageChange = (e) => {
@@ -111,6 +104,7 @@ class Chat extends React.Component{
             },
             data: {
                 message: this.state.message,
+                chatroom: this.state.chatTab
             }
         });
 
@@ -122,10 +116,11 @@ class Chat extends React.Component{
             this.props.history.replace('/login')
         } else {
             this.getMessagesFromDb();
+            this.getChatroomsFromDb();
             socket = openSocket('http://localhost:3002');
                 socket.on('chat message', (msg) => {
                     console.log("got msg: " + msg);
-                    this.setState({messages: [...this.state.messages.reverse(), msg].reverse()})
+                    this.setState({messages: [msg, ...this.state.messages]})
   });
         }
     }
@@ -143,36 +138,84 @@ class Chat extends React.Component{
         });
     }
 
+    getChatroomsFromDb() {
+        axios({
+            method: 'get',
+            url: 'http://localhost:3001/api/chatrooms',
+            headers: {
+                authorization: 'Bearer ' + getToken()
+            }
+        })
+        .then((res) => {
+            this.setState({chats: res.data });
+            console.log(this.state.chats);
+        });
+    }
+
+    createNewChat() {
+        axios({
+            method: 'post',
+            url: 'http://localhost:3001/api/chatrooms',
+            data: {
+                name: "NEW CHAT"
+            },
+            headers: {
+                authorization: 'Bearer ' + getToken()
+            }
+        })
+        .then((res) => {
+            console.log(res);
+        });
+    }
+
     render() {
         const { classes } = this.props;
+
+        const onChatTabClick = (event, newTab) => {
+            this.setState({chatTab: newTab});
+            if(newTab === 'NEW_CHAT') {
+                handleClickNewChat();
+            }
+        }
+
+        const handleClickNewChat = () => {
+            this.setState({createNewChat: true});
+          }
+        
+        const handleCloseNewChat = () => {
+            this.setState({createNewChat: false});
+        }
+
+        const handleCreateNewChat = () => {
+            this.setState({createNewChat: false});
+            this.createNewChat();
+        }
+
         return (
             <div className={classes.root}>
+                        <Tabs
+                            value={this.state.chatTab}
+                            onChange={onChatTabClick}
+                            indicatorColor="primary"
+                            textColor="primary"
+                            variant="scrollable"
+                            scrollButtons="auto"
+                            aria-label="scrollable auto tabs example"
+                        >
+                            <Tab label="Create new chat room" disableRipple value="NEW_CHAT" />
+
+                            {this.state.chats.map(chat => 
+                            <Tab label={chat.displayName} disableRipple value={chat._id} key={chat._id} />
+                                )}
+
+                        </Tabs>
                 <List className={classes.messagesList}>
 
                     {this.state.messages.map((value, index) => 
                     <React.Fragment key={index} >
-                         <ListItem alignItems="flex-start">
-                            <Avatar className={classes.orangeAvatar}>{value.displayName.charAt(0)}</Avatar>
-                           <ListItemText
-                             primary={value.displayName}
-                             secondary={
-                               <React.Fragment>
-                                 <Typography
-                                   component="span"
-                                   variant="body2"
-                                   className={classes.inline}
-                                   color="textPrimary"
-                                 >
-                                   {value.message}
-                                 </Typography>
-                                 <br />
-                                 {new Date(value.createdAt).toLocaleDateString() + " " + new Date(value.createdAt).toLocaleTimeString()}
-                               </React.Fragment>
-                             }
-                           />
-                         </ListItem>
-                         <Divider variant="inset" component="li" />
-                         </React.Fragment>
+                        <ChatMessage displayName={value.displayName} message={value.message} createdAt={value.createdAt} />
+                        <Divider variant="inset" component="li" />
+                    </React.Fragment>
 
                     )}
                 </List>
@@ -194,10 +237,35 @@ class Chat extends React.Component{
                 <Button variant="contained"
                  type="submit" 
                  className={classes.button}
+                 disableRipple
                  >
                     Post message
                 </Button>
-                </form>                
+                </form>              
+            
+
+            <Dialog open={this.state.createNewChat} onClose={handleCloseNewChat} aria-labelledby="form-dialog-title">
+            <DialogTitle id="form-dialog-title">Create new chat</DialogTitle>
+            <DialogContent>
+            <TextField
+                autoFocus
+                margin="dense"
+                id="name"
+                label="Chat name"
+                type="text"
+                fullWidth
+            />
+            </DialogContent>
+            <DialogActions>
+            <Button onClick={handleCloseNewChat} color="primary">
+                Cancel
+            </Button>
+            <Button onClick={handleCreateNewChat} color="primary">
+                Create
+            </Button>
+            </DialogActions>
+            </Dialog>
+
             </div>
         )
     }

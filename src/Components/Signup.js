@@ -1,12 +1,11 @@
 import React from 'react';
 import axios from 'axios';
 import TextField from '@material-ui/core/TextField';
-import { makeStyles } from '@material-ui/core/styles';
 import { withStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import { setToken } from './AuthHelper';
-import { shadows } from '@material-ui/system';
 import 'typeface-roboto';
 
 
@@ -16,15 +15,30 @@ const styles = theme => ({
         flexWrap: 'wrap',
     },
     textField: {
-       // marginLeft: theme.spacing(1),
-        //marginRight: theme.spacing(1),
-    },
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        marginTop: '5px',
+        backgroundColor:'#ffffff',
+        borderRadius: 5,
+        boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
+     },
     dense: {
        // marginTop: theme.spacing(2),
     },
     menu: {
         width: 200,
     },
+    button: {
+        width: "auto",
+        margin: "0 auto",
+        backgroundColor: theme.primary,
+        color: "#ffffff",
+        "&:hover": {
+            //you want this to be the same as the backgroundColor above
+            backgroundColor: "#1976d2"
+        },
+        boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
+    }
     
 });
  
@@ -81,6 +95,11 @@ class Signup extends React.Component {
         marginLeft: "auto",
         marginRight: "auto",
         marginTop: "30px"}}>
+        
+        <Typography variant="h1" component="h2" gutterBottom>
+        Register
+      </Typography>
+
         <form className = {classes.container}onSubmit = {this.handleSubmit}>
             
             <TextField
@@ -104,13 +123,14 @@ class Signup extends React.Component {
             <TextField
                 id="password"
                 label="password"
+                type="password"
                 className={classes.textField}
                 value={this.state.password}
                 onChange = {this.handlePasswordChange}
                 margin="normal"
                 variant="outlined"/>
 
-            <Button variant="outlined" type="submit"className={classes.button}>
+            <Button variant="outlined" type="submit" className={classes.button} disableRipple>
                 Sign up
             </Button>
     
