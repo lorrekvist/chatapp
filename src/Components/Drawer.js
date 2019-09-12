@@ -90,20 +90,16 @@ export default function FriendDrawer(props) {
   return (
     <React.Fragment>
     <Dialog open={open} onClose={handleClose} aria-labelledby="form-dialog-title">
-    <DialogTitle id="form-dialog-title">Subscribe</DialogTitle>
+    <DialogTitle id="form-dialog-title">Add friend</DialogTitle>
     <DialogContent>
-      <DialogContentText>
-        To subscribe to this website, please enter your email address here. We will send updates
-        occasionally.
-      </DialogContentText>
       <TextField
         value={displayName}
         onChange={handleChange}
         autoFocus
         margin="dense"
         id="name"
-        label="Email Address"
-        type="email"
+        label="Display name"
+        type="text"
         fullWidth
       />
     </DialogContent>
@@ -112,7 +108,7 @@ export default function FriendDrawer(props) {
         Cancel
       </Button>
       <Button onClick={handleAdd} color="primary">
-        Subscribe
+        Add friend
       </Button>
     </DialogActions>
   </Dialog>

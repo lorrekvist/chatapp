@@ -16,6 +16,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { isLoggedIn, getToken } from './AuthHelper';
 import ChatMessage from './ChatMessage';
+import FriendList from './FriendList';
 
 const useStyles = theme => ({
     '@global': {
@@ -80,7 +81,8 @@ class Chat extends React.Component{
         messages: [],
         chats : [],
         chatTab: 1,
-        createNewChat: false
+        createNewChat: false,
+        searchFriend : ""
     }
 
     handleMessageChange = (e) => {
@@ -191,6 +193,13 @@ class Chat extends React.Component{
             this.createNewChat();
         }
 
+        const updateSearchFriend = (e) => {
+            this.setState({
+                searchFriend: e.target.value
+            })
+            console.log(this.state.searchFriend)
+        }
+
         return (
             <div className={classes.root}>
                         <Tabs
@@ -247,12 +256,15 @@ class Chat extends React.Component{
             <Dialog open={this.state.createNewChat} onClose={handleCloseNewChat} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Create new chat</DialogTitle>
             <DialogContent>
+            <FriendList searchFriend={this.state.searchFriend} />
             <TextField
                 autoFocus
                 margin="dense"
                 id="name"
                 label="Chat name"
                 type="text"
+                value={this.state.searchFriend}
+                onChange={updateSearchFriend}
                 fullWidth
             />
             </DialogContent>
