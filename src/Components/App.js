@@ -9,7 +9,7 @@ import Chat from './Chat';
 import 'typeface-roboto';
 import { withStyles } from '@material-ui/styles';
 import { createMuiTheme } from '@material-ui/core/styles';
-
+import  friendDrawer  from './Drawer';
 import { ThemeProvider } from '@material-ui/styles';
 
 const theme = createMuiTheme({
@@ -51,6 +51,7 @@ class App extends React.Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/signup" component={Signup} />
               <Route exact path="/chat" component={Chat} />
+              
             </div>
           </Router>  
         </div>  
