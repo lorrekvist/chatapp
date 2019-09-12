@@ -28,6 +28,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import Link from '@material-ui/core/Link';
 import { Button } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField'
+import { isLoggedIn, getToken } from './AuthHelper';
 import axios from 'axios';
 
 
@@ -53,12 +54,30 @@ const logOut = () => {
 
 export default function FriendDrawer(props) {
     const [open, setOpen] = React.useState(false);
+    const [displayName, setDisplayName] = React.useState("");
     function handleClickOpen() {
         setOpen(true);
       }
-    
+      function handleChange(e){
+        setDisplayName(e.target.value)
+        console.log(displayName)
+      }
       function handleClose() {
         setOpen(false);
+      }
+      function handleAdd(){
+          console.log("hey")
+        axios({
+            method: 'post',
+            data: {friend2: displayName},
+            url: 'http://localhost:3001/api/friend/'+displayName,
+            headers: {
+                authorization: 'Bearer ' + getToken()
+            }
+        })
+        .then((res) => {
+            console.log(res)
+        });
       }
       const displayLinks = (num) => {
         switch(num){
@@ -78,6 +97,8 @@ export default function FriendDrawer(props) {
         occasionally.
       </DialogContentText>
       <TextField
+        value={displayName}
+        onChange={handleChange}
         autoFocus
         margin="dense"
         id="name"
@@ -90,7 +111,7 @@ export default function FriendDrawer(props) {
       <Button onClick={handleClose} color="primary">
         Cancel
       </Button>
-      <Button onClick={handleClose} color="primary">
+      <Button onClick={handleAdd} color="primary">
         Subscribe
       </Button>
     </DialogActions>
