@@ -14,7 +14,8 @@ const styles = theme => ({
     container: {
         display: 'flex',
         flexWrap: 'wrap',
-        width: '300px'
+        width: '300px',
+        textalign: 'center'
     },
     textField: {
        marginLeft: 'auto',
@@ -29,6 +30,12 @@ const styles = theme => ({
     },
     menu: {
         width: 200,
+    },
+    titleField: {
+        marginLeft:'auto',
+        marginRight:'auto',
+        fontSize:'50px',
+        width:'45%'
     },
     button: {
         width: "95px",
@@ -113,7 +120,7 @@ class Login extends React.Component {
         marginRight: "auto",
         marginTop: "30px"}}>
       
-        <Typography variant="h1" component="h2" gutterBottom>
+        <Typography className={classes.titleField} variant="h1" component="h2" gutterBottom>
             Log in
         </Typography>
 

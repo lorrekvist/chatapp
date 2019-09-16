@@ -13,7 +13,13 @@ import  friendDrawer  from './Drawer';
 import { ThemeProvider } from '@material-ui/styles';
 
 const theme = createMuiTheme({
-    primary: "#1976d2",
+    primary: "#25274D",
+    primaryLight: "#464866",
+    secondary: "#B8AB77",
+    palette: {
+      primary: { 500: "#25274D", A400: "#25274D" },
+      secondary: { 500: '#ffffff', A400: '#ffffff' },
+    }
 });
 
 const useStyles = theme => ({

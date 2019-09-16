@@ -50,8 +50,8 @@ const useStyles = theme => ({
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px",
         borderRadius: 5
     },
-    dense: {
-        
+    divider: {
+        backgroundColor: theme.primary
     },
     messagesList: {
         width: '100%',
@@ -76,11 +76,10 @@ var socket;
 class Chat extends React.Component{
 
     state = {
-        displayName: "",
         message: "",
         messages: [],
         chats : [],
-        chatTab: 1,
+        chatTab: "ALL_CHAT",
         createNewChat: false,
         searchFriend : ""
     }
@@ -96,21 +95,22 @@ class Chat extends React.Component{
     }
     handleSubmit = (e) => {
         e.preventDefault()
-        console.log(this.state.message)
+        if(this.state.message) {
+            axios({
+                method: 'post',
+                url: 'http://localhost:3001/api/messages',
+                headers: {
+                    authorization: 'Bearer ' + getToken()
+                },
+                data: {
+                    message: this.state.message,
+                    chatroom: this.state.chatTab
+                }
+            });
 
-        axios({
-            method: 'post',
-            url: 'http://localhost:3001/api/messages',
-            headers: {
-                authorization: 'Bearer ' + getToken()
-            },
-            data: {
-                message: this.state.message,
-                chatroom: this.state.chatTab
-            }
-        });
-
-        socket.emit('chat message', [getToken(), this.state.message]);
+            socket.emit('chat message', [getToken(), this.state.message, this.state.chatTab]);
+            this.setState({message: ""})
+        }
     }
 
     componentDidMount() {
@@ -120,17 +120,25 @@ class Chat extends React.Component{
             this.getMessagesFromDb();
             this.getChatroomsFromDb();
             socket = openSocket('http://localhost:3002');
-                socket.on('chat message', (msg) => {
-                    console.log("got msg: " + msg);
-                    this.setState({messages: [msg, ...this.state.messages]})
+            socket.emit('join chat', this.state.chatTab);
+            socket.on('chat message', (msg) => {
+                console.log("got msg: " + msg);
+                this.setState({messages: [msg, ...this.state.messages]})
   });
         }
     }
 
+    componentDidUpdate(prevProps, prevState) {
+        if(this.state.chatTab !== prevState.chatTab) {
+            this.getMessagesFromDb();
+        }
+    }
+
     getMessagesFromDb() {
+        this.setState({messages: []})
         axios({
             method: 'get',
-            url: 'http://localhost:3001/api/messages',
+            url: 'http://localhost:3001/api/messages/' + this.state.chatTab,
             headers: {
                 authorization: 'Bearer ' + getToken()
             }
@@ -159,7 +167,7 @@ class Chat extends React.Component{
             method: 'post',
             url: 'http://localhost:3001/api/chatrooms',
             data: {
-                name: "NEW CHAT"
+                friend: this.state.searchFriend
             },
             headers: {
                 authorization: 'Bearer ' + getToken()
@@ -174,10 +182,14 @@ class Chat extends React.Component{
         const { classes } = this.props;
 
         const onChatTabClick = (event, newTab) => {
+            socket.emit('leave chat', this.state.chatTab);
+            socket.emit('join chat', newTab);
+
             this.setState({chatTab: newTab});
             if(newTab === 'NEW_CHAT') {
                 handleClickNewChat();
             }
+            
         }
 
         const handleClickNewChat = () => {
@@ -212,6 +224,7 @@ class Chat extends React.Component{
                             aria-label="scrollable auto tabs example"
                         >
                             <Tab label="Create new chat room" disableRipple value="NEW_CHAT" />
+                            <Tab label="General" disableRipple value="ALL_CHAT" />
 
                             {this.state.chats.map(chat => 
                             <Tab label={chat.displayName} disableRipple value={chat._id} key={chat._id} />
@@ -223,7 +236,7 @@ class Chat extends React.Component{
                     {this.state.messages.map((value, index) => 
                     <React.Fragment key={index} >
                         <ChatMessage displayName={value.displayName} message={value.message} createdAt={value.createdAt} />
-                        <Divider variant="inset" component="li" />
+                        <Divider className={classes.divider} variant="inset" component="li" />
                     </React.Fragment>
 
                     )}
@@ -256,12 +269,12 @@ class Chat extends React.Component{
             <Dialog open={this.state.createNewChat} onClose={handleCloseNewChat} aria-labelledby="form-dialog-title">
             <DialogTitle id="form-dialog-title">Create new chat</DialogTitle>
             <DialogContent>
-            <FriendList searchFriend={this.state.searchFriend} />
+            <FriendList searchFriend={this.state.searchFriend} createChat={this.createNewChat} />
             <TextField
                 autoFocus
                 margin="dense"
                 id="name"
-                label="Chat name"
+                label="Display name of friend"
                 type="text"
                 value={this.state.searchFriend}
                 onChange={updateSearchFriend}

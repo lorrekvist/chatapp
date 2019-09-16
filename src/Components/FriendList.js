@@ -1,15 +1,18 @@
 import React from 'react';
 import axios from 'axios';
 import { getToken } from './AuthHelper';
+import { Link } from 'react-router-dom';
+
 
 class FriendList extends React.Component {
 
     state = {
+        friendsId: [],
         friends: []
     }
 
     componentDidMount() {
-        this.getFriends();
+       this.getFriends();
     }
 
     getFriends() {
@@ -21,37 +24,41 @@ class FriendList extends React.Component {
             }
         })
         .then((res) => {
-            console.log(res.data);
             this.setState({
-                friends: res.data
+                friendsId: res.data
+            })
+            res.data.forEach(
+                (element) => 
+                {
+                    console.log(element._id)
+                    axios({
+                    method: 'get',
+                    url: 'http://localhost:3001/api/users/' +  element.friend1 + '/' + element.friend2,
+                    headers: {
+                        authorization: 'Bearer ' + getToken()
+                    }
+                })
+                .then((user) => {
+                    this.setState({
+                        friends: [...this.state.friends, user.data]
+                    })
+                })
             })
         });
     }
-
-    getUserFromId(id) {
-        console.log(id)
-        axios({
-            method: 'get',
-            url: 'http://localhost:3001/api/users/' + id,
-            headers: {
-                authorization: 'Bearer ' + getToken()
-            }
-        })
-        .then((res) => {
-            console.log(res.data)
-            return res.data;
-        });
-    }
+   
 
     render() {
         return(
             <div>
                 {this.state.friends.map(value => (
-                    <p>{this.getUserFromId(value.friend1).displayName}</p>
+                        <Link onClick={this.props.createChat} key={value._id} id={value._id}>{value.displayName}</Link>
                     ))}
             </div>
         );
     }
 }
 
+
+    
 export default FriendList;

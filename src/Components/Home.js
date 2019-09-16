@@ -12,7 +12,7 @@ const useStyles = makeStyles(theme => ({
       marginLeft: "auto",
       marginRight: "auto",
       marginTop: "30px",
-      backgroundColor: "#1976d2",
+      backgroundColor: theme.primaryLight,
       color: "#ffffff",
     },
     

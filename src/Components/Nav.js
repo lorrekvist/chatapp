@@ -9,7 +9,7 @@ import FriendDrawer from './Drawer';
 
 
 const useStyles = makeStyles(theme => ({
-  tabs: {
+  tabs: {  
     flexGrow: 1,
     backgroundColor: theme.primary,
     margin:0,
@@ -19,10 +19,11 @@ const useStyles = makeStyles(theme => ({
     color: "#ffffff",
     fontWeight: "bold",
     "&:hover": {
-      backgroundColor: "#1666b5"
+      backgroundColor: theme.primaryLight
       
   },
-  }
+  
+}
 }));
 
 export default function Nav() {
@@ -46,14 +47,14 @@ export default function Nav() {
                 <Tabs className={classes.tabs}
                     value={value}
                     onChange={handleChange}
-                    indicatorColor="primary"
+                    indicatorColor="secondary"
                     centered
                     >
                     <Tab className={classes.tab} label="Home" component={Link} to="/" disableRipple />
                     <Tab className={classes.tab} label="Login" component={Link} to="/Login" disableRipple />
                     <Tab className={classes.tab} label="About" component={Link} to="/About" disableRipple />
                     <Tab className={classes.tab} label="Chat" component={Link} to="/Chat" disableRipple />
-                    <Tab className={classes.tab} label="Log out" component={Link} to="/" onClick={logOut} disableRipple />
+                    
                     <Tab className={classes.tab} label="toggle menu"onClick={toggleDrawer} disableRipple />
                     
                     

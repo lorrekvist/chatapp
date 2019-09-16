@@ -4,13 +4,12 @@ import Typography from '@material-ui/core/Typography';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
-import { deepOrange } from '@material-ui/core/colors';
 
 const useStyles = makeStyles(theme => ({
     orangeAvatar: {
         color: '#fff',
-        backgroundColor: deepOrange[500],
-        margin: 5
+        backgroundColor: theme.primaryLight,
+        margin: 5,
     },
     inline: {
       display: 'inline',
