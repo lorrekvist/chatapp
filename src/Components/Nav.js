@@ -3,10 +3,8 @@ import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import { Link } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import  friendDrawer  from './Drawer';
 import 'typeface-roboto';
 import FriendDrawer from './Drawer';
-
 
 const useStyles = makeStyles(theme => ({
   tabs: {  
@@ -56,16 +54,8 @@ export default function Nav() {
                     <Tab className={classes.tab} label="Chat" component={Link} to="/Chat" disableRipple />
                     
                     <Tab className={classes.tab} label="toggle menu"onClick={toggleDrawer} disableRipple />
-                    
-                    
-                    
                 </Tabs>
                 <FriendDrawer open={open}></FriendDrawer>
            </div>     
         )
-}
-
-
-const logOut = () => {
-  localStorage.removeItem('passToken');
 }

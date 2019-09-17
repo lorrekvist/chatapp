@@ -1,8 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-import { getToken } from './AuthHelper';
 import { Link } from 'react-router-dom';
-
+import { getToken } from './AuthHelper';
 
 class FriendList extends React.Component {
 
@@ -30,7 +29,6 @@ class FriendList extends React.Component {
             res.data.forEach(
                 (element) => 
                 {
-                    console.log(element._id)
                     axios({
                     method: 'get',
                     url: 'http://localhost:3001/api/users/' +  element.friend1 + '/' + element.friend2,
@@ -47,7 +45,6 @@ class FriendList extends React.Component {
         });
     }
    
-
     render() {
         return(
             <div>
@@ -59,6 +56,4 @@ class FriendList extends React.Component {
     }
 }
 
-
-    
 export default FriendList;

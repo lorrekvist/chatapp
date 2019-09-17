@@ -5,9 +5,8 @@ import { withStyles } from '@material-ui/styles';
 import PropTypes from 'prop-types'
 import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
-import { setToken } from './AuthHelper';
 import 'typeface-roboto';
-
+import { setToken } from './AuthHelper';
 
 const styles = theme => ({
     container: {
@@ -21,9 +20,6 @@ const styles = theme => ({
         backgroundColor:'#ffffff',
         borderRadius: 5,
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
-     },
-    dense: {
-       // marginTop: theme.spacing(2),
     },
     menu: {
         width: 200,
@@ -34,7 +30,6 @@ const styles = theme => ({
         backgroundColor: theme.primary,
         color: "#ffffff",
         "&:hover": {
-            //you want this to be the same as the backgroundColor above
             backgroundColor: "#1976d2"
         },
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
@@ -43,10 +38,6 @@ const styles = theme => ({
 });
  
 class Signup extends React.Component {
-    
-    
-
-    
     state = {
         email: "",
         password: "",
@@ -69,7 +60,6 @@ class Signup extends React.Component {
     }
     handleSubmit = (e) => {
         e.preventDefault()
-        console.log(this.state.email);
         axios({
             method: 'post',
             url: 'http://localhost:3001/signup',
@@ -80,16 +70,14 @@ class Signup extends React.Component {
             }
         }).then((result) => {
             if(result && result.data && result.data.signedJWT){
-                console.log("inuti 'THEN'")
                 setToken(result.data.signedJWT)
                 this.props.history.replace('/');
             }
         })
-        console.log(this.state.email + " " + this.state.password);
     }
 
    render() {
-       const { classes } = this.props;
+    const { classes } = this.props;
     return(
         <div style={{width: "300px",
         marginLeft: "auto",
@@ -98,10 +86,9 @@ class Signup extends React.Component {
         
         <Typography variant="h1" component="h2" gutterBottom>
         Register
-      </Typography>
+        </Typography>
 
         <form className = {classes.container}onSubmit = {this.handleSubmit}>
-            
             <TextField
                 id="email"
                 label="email"
@@ -133,7 +120,6 @@ class Signup extends React.Component {
             <Button variant="outlined" type="submit" className={classes.button} disableRipple>
                 Sign up
             </Button>
-    
         </form>
         </div>
         );
@@ -142,6 +128,5 @@ class Signup extends React.Component {
 Signup.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-
 
 export default withStyles(styles)(Signup);

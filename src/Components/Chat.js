@@ -18,6 +18,7 @@ import { isLoggedIn, getToken } from './AuthHelper';
 import ChatMessage from './ChatMessage';
 import FriendList from './FriendList';
 
+//Styling
 const useStyles = theme => ({
     '@global': {
         '*::-webkit-scrollbar': {
@@ -74,7 +75,7 @@ const useStyles = theme => ({
 var socket;
 
 class Chat extends React.Component{
-
+    //States for the chat functionality
     state = {
         message: "",
         messages: [],
@@ -87,8 +88,8 @@ class Chat extends React.Component{
     handleMessageChange = (e) => {
         this.setState({message: e.target.value})
     }
+    //allows for use of enter-key to submit
     handleKeyDown = (e) => {
-        console.log("key was pressed")
         if(e.key==='Enter'){
             this.handleSubmit(e)
         }
@@ -108,11 +109,17 @@ class Chat extends React.Component{
                 }
             });
 
-            socket.emit('chat message', [getToken(), this.state.message, this.state.chatTab]);
+            socket.emit('chat message', {
+                token: getToken(), 
+                message: this.state.message, 
+                chatroom: this.state.chatTab
+            });
+
             this.setState({message: ""})
         }
     }
 
+    //Checks whether or not you are logged in when attempting to access the chat.
     componentDidMount() {
         if (!isLoggedIn()) {
             this.props.history.replace('/login')
@@ -122,18 +129,18 @@ class Chat extends React.Component{
             socket = openSocket('http://localhost:3002');
             socket.emit('join chat', this.state.chatTab);
             socket.on('chat message', (msg) => {
-                console.log("got msg: " + msg);
                 this.setState({messages: [msg, ...this.state.messages]})
   });
         }
     }
 
     componentDidUpdate(prevProps, prevState) {
+        //Only update chat if you change chatroom
         if(this.state.chatTab !== prevState.chatTab) {
             this.getMessagesFromDb();
         }
     }
-
+    //GET all the messages that are stored
     getMessagesFromDb() {
         this.setState({messages: []})
         axios({
@@ -147,7 +154,7 @@ class Chat extends React.Component{
             this.setState({messages: res.data.reverse() });
         });
     }
-
+    //GET all the chatrooms that are stored
     getChatroomsFromDb() {
         axios({
             method: 'get',
@@ -158,10 +165,9 @@ class Chat extends React.Component{
         })
         .then((res) => {
             this.setState({chats: res.data });
-            console.log(this.state.chats);
         });
     }
-
+    //POST a new chatroom
     createNewChat() {
         axios({
             method: 'post',
@@ -174,7 +180,6 @@ class Chat extends React.Component{
             }
         })
         .then((res) => {
-            console.log(res);
         });
     }
 
@@ -188,8 +193,7 @@ class Chat extends React.Component{
             this.setState({chatTab: newTab});
             if(newTab === 'NEW_CHAT') {
                 handleClickNewChat();
-            }
-            
+            }    
         }
 
         const handleClickNewChat = () => {
@@ -209,92 +213,77 @@ class Chat extends React.Component{
             this.setState({
                 searchFriend: e.target.value
             })
-            console.log(this.state.searchFriend)
         }
 
         return (
             <div className={classes.root}>
-                        <Tabs
-                            value={this.state.chatTab}
-                            onChange={onChatTabClick}
-                            indicatorColor="primary"
-                            textColor="primary"
-                            variant="scrollable"
-                            scrollButtons="auto"
-                            aria-label="scrollable auto tabs example"
-                        >
-                            <Tab label="Create new chat room" disableRipple value="NEW_CHAT" />
-                            <Tab label="General" disableRipple value="ALL_CHAT" />
-
-                            {this.state.chats.map(chat => 
-                            <Tab label={chat.displayName} disableRipple value={chat._id} key={chat._id} />
-                                )}
-
-                        </Tabs>
-                <List className={classes.messagesList}>
-
-                    {this.state.messages.map((value, index) => 
-                    <React.Fragment key={index} >
-                        <ChatMessage displayName={value.displayName} message={value.message} createdAt={value.createdAt} />
-                        <Divider className={classes.divider} variant="inset" component="li" />
-                    </React.Fragment>
-
-                    )}
-                </List>
-                <form onSubmit = {this.handleSubmit} className={classes.inputForm}>
-                <TextField
-                    id="message"
-                    label="message"
-                    onChange={this.handleMessageChange}
-                    value={this.state.message}
-                    onKeyDown={this.handleKeyDown}
-                    className={clsx(classes.textField, classes.dense)}
-                    margin="dense"
-                    variant="outlined"
-                    multiline
-                    rowsMax="4"
-                    fullWidth
-                />
-                <br />
-                <Button variant="contained"
-                 type="submit" 
-                 className={classes.button}
-                 disableRipple
-                 >
-                    Post message
-                </Button>
-                </form>              
-            
-
-            <Dialog open={this.state.createNewChat} onClose={handleCloseNewChat} aria-labelledby="form-dialog-title">
-            <DialogTitle id="form-dialog-title">Create new chat</DialogTitle>
-            <DialogContent>
-            <FriendList searchFriend={this.state.searchFriend} createChat={this.createNewChat} />
-            <TextField
-                autoFocus
-                margin="dense"
-                id="name"
-                label="Display name of friend"
-                type="text"
-                value={this.state.searchFriend}
-                onChange={updateSearchFriend}
-                fullWidth
-            />
-            </DialogContent>
-            <DialogActions>
-            <Button onClick={handleCloseNewChat} color="primary">
-                Cancel
-            </Button>
-            <Button onClick={handleCreateNewChat} color="primary">
-                Create
-            </Button>
-            </DialogActions>
-            </Dialog>
-
+                <Tabs
+                    value={this.state.chatTab}
+                    onChange={onChatTabClick}
+                    indicatorColor="primary"
+                    textColor="primary"
+                    variant="scrollable"
+                    scrollButtons="auto"
+                    aria-label="scrollable auto tabs example">
+                        <Tab label="Create new chat room" disableRipple value="NEW_CHAT" />
+                        <Tab label="General" disableRipple value="ALL_CHAT" />
+                        {this.state.chats.map(chat => 
+                        <Tab label={chat.displayName} disableRipple value={chat._id} key={chat._id} />)}                   
+                </Tabs>
+                    <List className={classes.messagesList}>
+                        {this.state.messages.map((value, index) => 
+                        <React.Fragment key={index} >
+                            <ChatMessage displayName={value.displayName} message={value.message} createdAt={value.createdAt} />
+                            <Divider className={classes.divider} variant="inset" component="li" />
+                        </React.Fragment>)}                   
+                    </List>
+                    <form onSubmit = {this.handleSubmit} className={classes.inputForm}>
+                        <TextField
+                            id="message"
+                            label="message"
+                            onChange={this.handleMessageChange}
+                            value={this.state.message}
+                            onKeyDown={this.handleKeyDown}
+                            className={clsx(classes.textField, classes.dense)}
+                            margin="dense"
+                            variant="outlined"
+                            multiline
+                            rowsMax="4"
+                            fullWidth/>
+                    <Button variant="contained"
+                    type="submit" 
+                    className={classes.button}
+                    disableRipple>
+                        Post message
+                    </Button>
+                    </form>              
+        
+                    <Dialog open={this.state.createNewChat} onClose={handleCloseNewChat} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Create new chat</DialogTitle>
+                        <DialogContent>
+                            <FriendList searchFriend={this.state.searchFriend} createChat={this.createNewChat} />
+                                <TextField
+                                    autoFocus
+                                    margin="dense"
+                                    id="name"
+                                    label="Display name of friend"
+                                    type="text"
+                                    value={this.state.searchFriend}
+                                    onChange={updateSearchFriend}
+                                    fullWidth/>
+                        </DialogContent>
+                        <DialogActions>
+                            <Button onClick={handleCloseNewChat} color="primary">
+                                Cancel
+                            </Button>
+                            <Button onClick={handleCreateNewChat} color="primary">
+                                Create
+                            </Button>
+                        </DialogActions>
+                    </Dialog>
             </div>
         )
     }
-    
 }
 
 export default withStyles(useStyles)(Chat);

@@ -1,17 +1,17 @@
 import React from 'react';
 import { BrowserRouter as Router, Route} from "react-router-dom";
+import { withStyles } from '@material-ui/styles';
+import { createMuiTheme } from '@material-ui/core/styles';
+import { ThemeProvider } from '@material-ui/styles';
+import 'typeface-roboto';
 import  Login  from './Login'
 import  Nav  from './Nav'
 import  Home from './Home';
 import About from './About'
 import Signup from './Signup'
 import Chat from './Chat';
-import 'typeface-roboto';
-import { withStyles } from '@material-ui/styles';
-import { createMuiTheme } from '@material-ui/core/styles';
-import  friendDrawer  from './Drawer';
-import { ThemeProvider } from '@material-ui/styles';
 
+// Theme for material ui
 const theme = createMuiTheme({
     primary: "#25274D",
     primaryLight: "#464866",
@@ -27,20 +27,18 @@ const useStyles = theme => ({
       background: "url('https://www.toptal.com/designers/subtlepatterns/patterns/brushed.png')",
       height: "100vh",
   },
-
 }); 
 
 class App extends React.Component {
-    state = {
-      categorySelected: 0
-    }
+  state = {
+    categorySelected: 0
+  }
 
 
-  onCategoryChange = selectedCat => {
-    console.log("selected category: " + selectedCat)
-    this.setState({
-        categorySelected : selectedCat
-    })  
+onCategoryChange = selectedCat => {
+  this.setState({
+      categorySelected : selectedCat
+  })  
 }
 
     render(){
@@ -57,15 +55,12 @@ class App extends React.Component {
               <Route exact path="/login" component={Login} />
               <Route exact path="/signup" component={Signup} />
               <Route exact path="/chat" component={Chat} />
-              
             </div>
           </Router>  
         </div>  
         </ThemeProvider>
       );
-      
   }
 }
-
 
 export default withStyles(useStyles)(App);

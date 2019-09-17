@@ -9,7 +9,6 @@ import Typography from '@material-ui/core/Typography';
 import { setToken } from './AuthHelper';
 import 'typeface-roboto';
 
-
 const styles = theme => ({
     container: {
         display: 'flex',
@@ -24,9 +23,6 @@ const styles = theme => ({
        backgroundColor:'#ffffff',
        borderRadius: 5,
        boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
-    },
-    dense: {
-       // marginTop: theme.spacing(2),
     },
     menu: {
         width: 200,
@@ -44,7 +40,6 @@ const styles = theme => ({
         backgroundColor: theme.primary,
         color: "#ffffff",
         "&:hover": {
-            //you want this to be the same as the backgroundColor above
             backgroundColor: "#1976d2"
         },
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
@@ -56,7 +51,6 @@ const styles = theme => ({
         backgroundColor: theme.primary,
         color: "#ffffff",
         "&:hover": {
-            //you want this to be the same as the backgroundColor above
             backgroundColor: "#1976d2"
         },
         boxShadow: "rgba(0, 0, 0, 0.2) 0px 1px 5px 0px, rgba(0, 0, 0, 0.14) 0px 2px 2px 0px, rgba(0, 0, 0, 0.12) 0px 3px 1px -2px"
@@ -65,10 +59,6 @@ const styles = theme => ({
 });
  
 class Login extends React.Component {
-    
-    
-
-    
     state = {
         email: "",
         password: ""
@@ -79,7 +69,6 @@ class Login extends React.Component {
 
     }
     handleKeyDownPass = (e) => {
-        console.log("key was pressed")
         if(e.key==='Enter'){
             this.handleSubmit(e)
         }
@@ -103,16 +92,14 @@ class Login extends React.Component {
             }
         }).then((result) => {
             if(result && result.data && result.data.signedJWT){
-                console.log("inuti 'THEN'")
                 setToken(result.data.signedJWT)
                 this.props.history.replace('/');
             }
         })
-        console.log(this.state.email + " " + this.state.password);
     }
 
    render() {
-       const { classes } = this.props;
+    const { classes } = this.props;
     return(      
        
         <div style={{width: "300px",
@@ -125,7 +112,6 @@ class Login extends React.Component {
         </Typography>
 
         <form className = {classes.container}onSubmit = {this.handleSubmit}>
-            
             <TextField
                 id="email"
                 label="email"
@@ -155,15 +141,14 @@ class Login extends React.Component {
             <Button variant="outlined" className={classes.button2} component={RouterLink} to="/signup" disableRipple>
                 sign up
             </Button>
-    
         </form>           
         </div>      
         );
    }
 }
+
 Login.propTypes = {
     classes: PropTypes.object.isRequired,
 };
-
 
 export default withStyles(styles)(Login);

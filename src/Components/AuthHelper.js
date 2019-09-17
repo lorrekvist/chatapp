@@ -9,7 +9,8 @@ export const getToken = () => {
 export const isLoggedIn = () => {
     if (getToken()) {
         return true
-    } else {
+    } 
+    else {
         return false
     }
 }
@@ -17,5 +18,3 @@ export const isLoggedIn = () => {
 export const logout = () => {
     localStorage.removeItem('passToken')
 }
-
-//Exercise - Add funtionality to check if token has expired or not

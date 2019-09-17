@@ -25,14 +25,14 @@ export default function PaperSheet() {
         <Paper className={classes.root}>
           <Typography variant="h5" component="h3">
             What is chatBois?
-            </Typography>
-                <Typography component="p">
-                Here at chatbois you can chat about anything!
-                Chat about chatBois! Chat about chatting about chatBois!
+          </Typography>
+          <Typography component="p">
+            Here at chatbois you can chat about anything!
+            Chat about chatBois! Chat about chatting about chatBois!
 
-                Start by creating an account and then go chat! You can add anyone you'd like by opening the menu.
-                You can furthermore also create private chats with your friends by clicking the Create new chat button and then the friend you'd like a chat with!
-                </Typography>
+            Start by creating an account and then go chat! You can add anyone you'd like by opening the menu.
+            You can furthermore also create private chats with your friends by clicking the Create new chat button and then the friend you'd like a chat with!
+          </Typography>
         </Paper>
       </div>
     );
